@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace IdentityServer.Backend
+namespace Client.Backend
 {
     public class Startup
     {
@@ -26,17 +26,6 @@ namespace IdentityServer.Backend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            // configure identity server with in-memory stores, keys, clients and scopes
-            services.AddIdentityServer(opt =>
-                {
-                    opt.UserInteraction.LoginUrl = "http://localhost:4200/login";
-                })
-                .AddDeveloperSigningCredential()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddTestUsers(Config.GetUsers());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,8 +39,6 @@ namespace IdentityServer.Backend
             {
                 app.UseHsts();
             }
-
-            app.UseIdentityServer();
 
             app.UseHttpsRedirection();
             app.UseMvc();

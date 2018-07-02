@@ -35,14 +35,14 @@ namespace IdentityServer.Backend
         // JavaScript Client
         new Client
         {
-          ClientId = "js",
+          ClientId = "singleapp",
           ClientName = "JavaScript Client",
           AllowedGrantTypes = GrantTypes.Implicit,
           AllowAccessTokensViaBrowser = true,
 
-          RedirectUris = { "http://localhost:4200/callback" },
-          PostLogoutRedirectUris = { "http://localhost:4200/index.html" },
-          AllowedCorsOrigins = { "http://localhost:4200" },
+          RedirectUris = { "http://localhost:4201" },
+          PostLogoutRedirectUris = { "http://localhost:4201/unauthorized" },
+          AllowedCorsOrigins = { "http://localhost:4201" },
 
           AllowedScopes =
           {
