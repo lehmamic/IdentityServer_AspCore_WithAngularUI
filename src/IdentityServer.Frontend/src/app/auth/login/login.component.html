@@ -1,16 +1,17 @@
 <h2>
   Login
 </h2>
-<form>
-  <div>
-    Username:
+<form #loginForm="ngForm">
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input id="username" type="text" [(ngModel)]="username" name="username" />
   </div>
-  <input type="text" />
 
-  <div>
-    Password:
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input id="password" type="password" [(ngModel)]="password" name="password" />
   </div>
-  <input type="text" />
+
   <div>
     <button (click)="login()">Login</button>
   </div>

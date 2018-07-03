@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,19 @@ namespace IdentityServer.Backend
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    // client & identity server ports => require for the redicrect statement in a rest call (e.g. post login).
+                    policy.WithOrigins("http://localhost:4200", "http://localhost:5001")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             // configure identity server with in-memory stores, keys, clients and scopes
             services.AddIdentityServer(opt =>
                 {
@@ -37,6 +51,9 @@ namespace IdentityServer.Backend
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddTestUsers(Config.GetUsers());
+
+            // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //         .AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +67,8 @@ namespace IdentityServer.Backend
             {
                 app.UseHsts();
             }
+
+            app.UseCors("default");
 
             app.UseIdentityServer();
 

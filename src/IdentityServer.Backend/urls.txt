@@ -1,0 +1,4 @@
+/connect/authorize/callback?client_id=js&redirect_uri=http%3A%2F%2Flocalhost%3A5003%2Fcallback.html&response_type=id_token%20token&scope=openid%20profile%20api1&state=b05508ea9df947ac9d98f6d1fd0a33e5&nonce=f49ac5823a8c41a0b76fd6178b89301f
+/connect/authorize/callback?client_id=js&redirect_uri=http%3A%2F%2Flocalhost%3A5003%2Fcallback.html&response_type=id_token%20token&scope=openid%20profile%20api1&state=b05508ea9df947ac9d98f6d1fd0a33e5&nonce=f49ac5823a8c41a0b76fd6178b89301f
+
+/connect/authorize/callback?client_id=singleapp&redirect_uri=http%3A%2F%2Flocalhost%3A4201&response_type=id_token%20token&scope=openid%20profile%20api1&nonce=N0.72327967018519471530543312383&state=15305413862990.49222951010214056
