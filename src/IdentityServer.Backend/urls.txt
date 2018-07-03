@@ -2,3 +2,9 @@
 /connect/authorize/callback?client_id=js&redirect_uri=http%3A%2F%2Flocalhost%3A5003%2Fcallback.html&response_type=id_token%20token&scope=openid%20profile%20api1&state=b05508ea9df947ac9d98f6d1fd0a33e5&nonce=f49ac5823a8c41a0b76fd6178b89301f
 
 /connect/authorize/callback?client_id=singleapp&redirect_uri=http%3A%2F%2Flocalhost%3A4201&response_type=id_token%20token&scope=openid%20profile%20api1&nonce=N0.72327967018519471530543312383&state=15305413862990.49222951010214056
+
+
+
+/connect/authorize/callback?client_id=js&redirect_uri=http%3A%2F%2Flocalhost%3A5003%2Fcallback.html&response_type=id_token%20token&scope=openid%20profile%20api1&state=1f845548386949f78d60d4b732c2c0a5&nonce=0b415328f0724d01a6ec904a16e4feb2
+/connect/authorize/callback?client_id=singleapp&redirect_uri=http%3A%2F%2Flocalhost%3A4201&response_type=id_token%20token&scope=openid%20profile%20api1&nonce=N0.69043186187923241530603003435&state=15305413862990.49222951010214056
+"https:%2F%2Flocalhost:5001%2Fconnect%2Fauthorize%2Fcallback%3Fclient_id%3Dsingleapp%26redirect_uri%3Dhttp%253A%252F%252Flocalhost%253A4201%26response_type%3Did_token%2520token%26scope%3Dopenid%2520profile%2520api1%26nonce%3DN0.69043186187923241530603003435%26state%3D15305413862990.49222951010214056"

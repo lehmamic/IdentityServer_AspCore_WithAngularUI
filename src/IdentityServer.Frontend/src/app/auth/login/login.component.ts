@@ -3,7 +3,6 @@ import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { map, flatMap } from 'rxjs/operators';
-import { Http } from '@angular/http';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +15,7 @@ export class LoginComponent implements OnInit {
   public password: string;
   private returnUrl: string;
 
-  constructor(private httpClient: HttpClient, private http: Http, private route: ActivatedRoute, private location: Location) {
+  constructor(private httpClient: HttpClient, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -36,7 +35,10 @@ export class LoginComponent implements OnInit {
         flatMap(dto => this.httpClient.post(
           'https://localhost:5001/api/account/login',
           dto,
-          { observe: 'response', withCredentials: true }))
+          {
+            observe: 'response',
+            withCredentials: true
+          }))
       )
       .subscribe(resp => {
         // const redirectUrl = `https://localhost:5001${decodeURI(decodeURI((<any>resp.body).returnUrl))}`;

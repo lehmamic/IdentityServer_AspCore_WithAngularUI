@@ -1,0 +1,23 @@
+<div *ngIf="loggedOutInfo != null">
+  <div>
+      <h2>
+        Logout
+        <small *ngIf="loggedOutInfo.showLogoutPrompt">You are now logged out</small>
+      </h2>
+  </div>
+
+  <div *ngIf="loggedOutInfo.showLogoutPrompt">
+      <p>Would you like to logout of IdentityServer?</p>
+
+      <button (click)=logout()>Yes</button>
+  </div>
+
+  <div *ngIf="loggedOutInfo.postLogoutRedirectUri != null">
+      Click <a [href]="loggedOutInfo.postLogoutRedirectUri">here</a> to return to the
+      <span>{{loggedOutInfo.clientName}}</span> application.
+  </div>
+
+  <div *ngIf="loggedOutInfo .signOutIframeUrl != null">
+    <iframe width="0" height="0" class="signout" [src]="sanitizeUrl(loggedOutInfo.signOutIframeUrl)"></iframe>
+  </div>
+</div>
