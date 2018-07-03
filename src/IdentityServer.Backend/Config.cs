@@ -39,6 +39,7 @@ namespace IdentityServer.Backend
           ClientName = "JavaScript Client",
           AllowedGrantTypes = GrantTypes.Implicit,
           AllowAccessTokensViaBrowser = true,
+          AllowOfflineAccess = false, // required for silent renewal
 
           RedirectUris = { "http://localhost:4201" },
           PostLogoutRedirectUris = { "http://localhost:4201/unauthorized" },

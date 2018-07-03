@@ -42,9 +42,9 @@ export class AppModule {
     openIDImplicitFlowConfiguration.scope = 'openid profile api1';
     openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'http://localhost:4201/Unauthorized';
     openIDImplicitFlowConfiguration.start_checksession = false;
-    openIDImplicitFlowConfiguration.silent_renew = true;
+    openIDImplicitFlowConfiguration.silent_renew = false;
     openIDImplicitFlowConfiguration.silent_renew_url = 'http://localhost:5001/silent-renew.html';
-    openIDImplicitFlowConfiguration.post_login_route = '/dataeventrecords';
+    openIDImplicitFlowConfiguration.post_login_route = '/';
     // HTTP 403
     openIDImplicitFlowConfiguration.forbidden_route = '/Forbidden';
     // HTTP 401

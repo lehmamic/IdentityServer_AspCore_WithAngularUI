@@ -26,7 +26,7 @@ namespace IdentityServer.Backend
                 options.AddPolicy("default", policy =>
                 {
                     // client & identity server ports => require for the redicrect statement in a rest call (e.g. post login).
-                    policy.WithOrigins("http://localhost:4200", "http://localhost:5001")
+                    policy.WithOrigins("http://localhost:4200", "http://localhost:4201")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
