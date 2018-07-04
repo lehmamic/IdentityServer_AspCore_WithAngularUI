@@ -1,18 +1,53 @@
 <h2>
   Login
 </h2>
-<form #loginForm="ngForm">
-  <div class="form-group">
-    <label for="username">Username</label>
-    <input id="username" type="text" [(ngModel)]="username" name="username" />
-  </div>
 
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input id="password" type="password" [(ngModel)]="password" name="password" />
-  </div>
+<div *ngIf="(loginInfo | async)?.enableLocalLogin">
+    <div>
+        <h3>Local Login</h3>
+    </div>
 
+  <form #loginForm="ngForm">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input id="username" type="text" [(ngModel)]="username" name="username" />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" [(ngModel)]="password" name="password" />
+    </div>
+
+    <div *ngIf="(loginInfo | async)?.allowRememberLogin">
+        <label>
+            <input type="checkbox" [(ngModel)]="rememberLogin" name="rememberLogin" />
+            <strong>Remember My Login</strong>
+        </label>
+    </div>
+
+    <div>
+      <button (click)="login()">Login</button>
+    </div>
+  </form>
+</div>
+
+<!-- @if (Model.VisibleExternalProviders.Any())
+{ -->
+<div *ngIf="(loginInfo | async)?.visibleExternalProviders.length > 0">
   <div>
-    <button (click)="login()">Login</button>
+      <h3>External Login</h3>
   </div>
-</form>
+  <div>
+      <ul>
+        <li *ngFor="let provider of (loginInfo | async)?.visibleExternalProviders">
+            <a [href]="externalLoginUrl(provider.authenticationScheme, (loginInfo | async)?.returnUrl)">{{provider.displayName}}</a>
+        </li>
+      </ul>
+  </div>
+</div>
+<!-- } -->
+
+<div *ngIf="!(loginInfo | async)?.enableLocalLogin && (loginInfo | async)?.visibleExternalProviders.length <= 0">
+    <strong>Invalid login request</strong>
+    There are no login schemes configured for this client.
+</div>

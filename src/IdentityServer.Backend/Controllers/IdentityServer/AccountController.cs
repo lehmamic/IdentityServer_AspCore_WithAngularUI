@@ -167,7 +167,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
             // validate return URL and redirect back to authorization endpoint or a local page
             var returnUrl = result.Properties.Items["returnUrl"];
-            if (this.interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
+            if (this.interaction.IsValidReturnUrl(returnUrl.Replace("https://localhost:5001", string.Empty)) || Url.IsLocalUrl(returnUrl.Replace("https://localhost:5001", string.Empty)))
             {
                 return Redirect(returnUrl);
             }
@@ -423,7 +423,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
         private TestUser AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
         {
-            var user = this.AutoProvisionUser(provider, providerUserId, claims.ToList());
+            var user = this.users.AutoProvisionUser(provider, providerUserId, claims.ToList());
             return user;
         }
 
