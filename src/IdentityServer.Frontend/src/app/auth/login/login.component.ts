@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { map, flatMap } from 'rxjs/operators';
-import { LoginInfoDto, ExternalProviderDto } from './login.model';
-import { Observable } from 'rxjs';
+import { map, flatMap, catchError } from 'rxjs/operators';
+import { LoginInfoDto, ExternalProviderDto, LoginRequestDto } from './login.model';
+import { Observable, of } from 'rxjs';
+import { RedirectDto, ErrorDto } from '../auth.model';
+import { Key } from 'protractor';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +14,8 @@ import { Observable } from 'rxjs';
 })
 export class LoginComponent implements OnInit {
 
-  public loginInfo: Observable<LoginInfoDto>;
+  public loginInfo$: Observable<LoginInfoDto>;
+  public errors: ErrorDto;
   public username: string;
   public password: string;
   public rememberLogin: boolean;
@@ -21,7 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loginInfo = this.route
+    this.loginInfo$ = this.route
       .queryParamMap
       .pipe(
         map(params => params.get('returnUrl')),
@@ -31,8 +34,23 @@ export class LoginComponent implements OnInit {
           };
 
           return this.http.get<LoginInfoDto>('https://localhost:5001/api/account/login', options);
-        })
+        }),
+        catchError(error => this.handleError<LoginInfoDto>(error))
       );
+  }
+
+  public getErrorsMessages(): Array<string> {
+    const messages: Array<string> = [];
+
+    if (this.errors) {
+      for (const msgs of Object.keys(this.errors).map(key => this.errors[key])) {
+        for (const msg of msgs) {
+          messages.push(msg);
+        }
+      }
+    }
+
+    return messages;
   }
 
   public visibleExternalProviders(externalProviders: Array<ExternalProviderDto>): Array<ExternalProviderDto> {
@@ -48,17 +66,33 @@ export class LoginComponent implements OnInit {
     .queryParamMap
       .pipe(
         map(params => params.get('returnUrl')),
-        map(returnUrl => ({ username: this.username, password: this.password, rememberLogin: this.rememberLogin, returnUrl: returnUrl })),
-        flatMap(dto => this.http.post(
+        map(returnUrl =>
+          (<LoginRequestDto>
+          {
+            username: this.username,
+            password: this.password,
+            rememberLogin: this.rememberLogin,
+            returnUrl: returnUrl
+          })),
+        flatMap(dto => this.http.post<RedirectDto>(
           'https://localhost:5001/api/account/login',
           dto,
           {
-            observe: 'response',
             withCredentials: true
-          }))
+          })),
+          catchError(error => this.handleError<RedirectDto>(error))
       )
-      .subscribe(resp => {
-        window.location.href = (<any>resp.body).redirectUrl;
+      .subscribe(data => {
+        window.location.href = data.redirectUrl;
       }, err => console.error(err));
+  }
+
+  private handleError<T>(error: HttpErrorResponse): Observable<T> {
+    if (error.status === 400) {
+      this.errors = error.error;
+    } else if (error.status === 401) {
+      this.errors = { '': ['Invalid username or password.'] };
+    }
+    return of();
   }
 }

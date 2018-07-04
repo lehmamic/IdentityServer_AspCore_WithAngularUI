@@ -2,7 +2,11 @@
   Login
 </h2>
 
-<div *ngIf="(loginInfo | async)?.enableLocalLogin">
+<div>
+  <div *ngFor="let message of getErrorsMessages()">{{message}}</div>
+</div>
+
+<div *ngIf="(loginInfo$ | async)?.enableLocalLogin">
     <div>
         <h3>Local Login</h3>
     </div>
@@ -10,15 +14,15 @@
   <form #loginForm="ngForm">
     <div class="form-group">
       <label for="username">Username</label>
-      <input id="username" type="text" [(ngModel)]="username" name="username" />
+      <input id="username" type="text" [(ngModel)]="username" name="username" required />
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
-      <input id="password" type="password" [(ngModel)]="password" name="password" />
+      <input id="password" type="password" [(ngModel)]="password" name="password" required />
     </div>
 
-    <div *ngIf="(loginInfo | async)?.allowRememberLogin">
+    <div *ngIf="(loginInfo$ | async)?.allowRememberLogin">
         <label>
             <input type="checkbox" [(ngModel)]="rememberLogin" name="rememberLogin" />
             <strong>Remember My Login</strong>
@@ -26,19 +30,19 @@
     </div>
 
     <div>
-      <button (click)="login()">Login</button>
+      <button (click)="login()" [disabled]="!loginForm.valid">Login</button>
     </div>
   </form>
 </div>
 
-<div *ngIf="visibleExternalProviders((loginInfo | async)?.externalProviders).length > 0">
+<div *ngIf="visibleExternalProviders((loginInfo$ | async)?.externalProviders).length > 0">
   <div>
       <h3>External Login</h3>
   </div>
   <div>
       <ul>
-        <li *ngFor="let provider of visibleExternalProviders((loginInfo | async)?.externalProviders)">
-            <a [href]="externalLoginUrl(provider.authenticationScheme, (loginInfo | async)?.returnUrl)">{{provider.displayName}}</a>
+        <li *ngFor="let provider of visibleExternalProviders((loginInfo$ | async)?.externalProviders)">
+            <a [href]="externalLoginUrl(provider.authenticationScheme, (loginInfo$ | async)?.returnUrl)">{{provider.displayName}}</a>
         </li>
       </ul>
   </div>

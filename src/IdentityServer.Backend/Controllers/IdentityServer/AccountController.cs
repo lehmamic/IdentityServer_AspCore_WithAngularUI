@@ -63,7 +63,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
         [HttpPost("login")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromBody]LoginInputModel model)
+        public async Task<IActionResult> Login([FromBody]LoginRequestDto model)
         {
             if (ModelState.IsValid)
             {
@@ -99,10 +99,13 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
                 }
 
                 await this.events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
+                return this.Unauthorized();
             }
+            this.ModelState.AddModelError("", "Test error message");
+            this.ModelState.AddModelError("", "Test error message 2");
 
             // something went wrong, show form with error
-            return this.Unauthorized();
+            return this.BadRequest(this.ModelState);
         }
 
         [HttpGet("externalLogin")]

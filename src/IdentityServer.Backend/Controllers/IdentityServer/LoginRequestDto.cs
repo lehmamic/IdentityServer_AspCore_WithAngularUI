@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace IdentityServer.Backend.Controllers.IdentityServer
 {
-    public class LoginInputModel
+    public class LoginRequestDto
     {
         [Required]
         public string Username { get; set; }

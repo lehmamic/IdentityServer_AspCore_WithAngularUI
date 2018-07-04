@@ -10,3 +10,10 @@ export interface ExternalProviderDto {
   displayName: string;
   authenticationScheme: string;
 }
+
+export interface LoginRequestDto {
+  username: string;
+  password: string;
+  rememberLogin: boolean;
+  returnUrl: string;
+}
