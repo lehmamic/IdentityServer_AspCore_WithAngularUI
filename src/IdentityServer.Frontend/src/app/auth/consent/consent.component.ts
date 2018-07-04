@@ -40,7 +40,6 @@ export class ConsentComponent implements OnInit {
   }
 
   public sendConsent(button: ButtonType): void {
-
     this.consentInfo.pipe(
       map(info =>
       ({
