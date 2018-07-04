@@ -85,10 +85,10 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
                     // the IsLocalUrl check is only necessary if you want to support additional local pages, otherwise IsValidReturnUrl is more strict
                     //if (this.interaction.IsValidReturnUrl(model.ReturnUrl) || Url.IsLocalUrl(model.ReturnUrl))
                     {
-                        return Ok(new { ReturnUrl = model.ReturnUrl });
+                        return Ok(new RedirectResultDto { RedirectUrl = model.ReturnUrl });
                     }
 
-                    // return Ok(new { ReturnUrl = "~/" });
+                    // return Ok(new RedirectResultDto { ReturnUrl = "~/" });
                 }
 
                 await this.events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));

@@ -1,0 +1,27 @@
+<li>
+    <label>
+        <input type="checkbox"
+               name="ScopesConsented"
+               [id]="'scopes_' + scope.name"
+               [value]="scope.name"
+               [checked]="scope.checked"
+               [disabled]="scope.required" />
+        <!-- @if (Model.Required)
+        {
+            <input type="hidden"
+                   name="ScopesConsented"
+                   value="@Model.Name" />
+        } -->
+        <strong>{{ scope.displayName }}</strong>
+        <!-- @if (Model.Emphasize)
+        {
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+        } -->
+    </label>
+
+    <span *ngIf="scope.required"><em>(required)</em></span>
+
+    <div *ngIf="scope.description != null">
+        <label [for]="'scopes_' + scope.name">{{scope.description}}}</label>
+    </div>
+</li>

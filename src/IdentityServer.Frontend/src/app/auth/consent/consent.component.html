@@ -1,0 +1,58 @@
+<div>
+    <div class="client-logo" *ngIf="(consentInfo | async)?.clientLogoUrl != null">
+      <img src="(consentInfo | async)?.clientLogoUrl">
+    </div>
+
+    <h1>
+        {{ (consentInfo | async)?.clientName }}
+        <small>is requesting your permission</small>
+    </h1>
+
+    <div>
+        <form>
+            <div>Uncheck the permissions you do not wish to grant.</div>
+
+            <div *ngIf="(consentInfo | async)?.identityScopes?.length > 0">
+                <div>
+                    <span></span>
+                    Personal Information
+                </div>
+                <ul>
+                  <app-scope-list-item *ngFor="let scope of (consentInfo | async)?.identityScopes" [scope]="scope"></app-scope-list-item>
+                </ul>
+            </div>
+
+            <div *ngIf="(consentInfo | async)?.resourceScopes?.length > 0">
+                <div>
+                    <span></span>
+                    Application Access
+                </div>
+                <ul class="list-group">
+                    <app-scope-list-item *ngFor="let scope of (consentInfo | async)?.resourceScopes" [scope]="scope"></app-scope-list-item>
+                </ul>
+            </div>
+
+            <!-- @if (Model.AllowRememberConsent)
+            { -->
+                <div *ngIf="(consentInfo | async)?.allowRememberConsent">
+                    <label>
+                        <input type="checkbox" [(ngModel)]="rememberMyDecision" name="rememberMyDecision"/>
+                        <strong>Remember My Decision</strong>
+                    </label>
+                </div>
+            <!-- } -->
+
+            <div class="consent-buttons">
+                <button name="button" value="yes" class="btn btn-primary" autofocus (click)="sendConsent('yes')">Yes, Allow</button>
+                <button name="button" value="no" class="btn" (click)="sendConsent('no')"
+                >No, Do Not Allow</button>
+                <!-- @if (Model.ClientUrl != null)
+                {-->
+                    <a *ngIf="(consentInfo | async)?.clientUrl" class="pull-right btn btn-default" target="_blank" [href]="(consentInfo | async)?.clientUrl">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        <strong>(consentInfo | async)?.clientName</strong>
+                    </a>
+            </div>
+        </form>
+    </div>
+</div>

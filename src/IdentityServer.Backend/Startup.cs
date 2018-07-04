@@ -38,6 +38,7 @@ namespace IdentityServer.Backend
                 {
                     opt.UserInteraction.LoginUrl = "http://localhost:4200/login";
                     opt.UserInteraction.LogoutUrl = "http://localhost:4200/logout";
+                    opt.UserInteraction.ConsentUrl = "http://localhost:4200/consent";
                 })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())

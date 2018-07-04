@@ -44,7 +44,7 @@ namespace IdentityServer.Backend
           RedirectUris = { "http://localhost:4201" },
           PostLogoutRedirectUris = { "http://localhost:4201/unauthorized" },
           AllowedCorsOrigins = { "http://localhost:4200", "http://localhost:4201" },
-          RequireConsent = false,
+          RequireConsent = true,
           AllowedScopes =
           {
             IdentityServerConstants.StandardScopes.OpenId,
