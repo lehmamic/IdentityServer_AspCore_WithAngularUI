@@ -4,9 +4,6 @@ export interface LoginInfoDto {
   allowRememberLogin: boolean;
   enableLocalLogin: boolean;
   externalProviders: Array<ExternalProviderDto>;
-  visibleExternalProviders: Array<ExternalProviderDto>;
-  isExternalLoginOnly: boolean;
-  externalLoginScheme: string;
 }
 
 export interface ExternalProviderDto {

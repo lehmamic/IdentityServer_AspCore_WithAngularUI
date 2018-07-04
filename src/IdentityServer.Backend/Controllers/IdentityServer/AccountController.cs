@@ -50,12 +50,12 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         public async Task<IActionResult> Login(string returnUrl)
         {
             // build a model so we know what to show on the login page
-            var dto = await this.BuildLoginInfoDtoAsync(returnUrl);
+            LoginInfoDto dto = await this.BuildLoginInfoDtoAsync(returnUrl);
 
-            if (dto.IsExternalLoginOnly)
+            if (dto.IsExternalLoginOnly())
             {
                 // we only have one option for logging in and it's an external provider
-                return await this.ExternalLogin(dto.ExternalLoginScheme, returnUrl);
+                return await this.ExternalLogin(dto.ExternalLoginScheme(), returnUrl);
             }
 
             return Ok(dto);
@@ -226,13 +226,13 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             return Ok(dto);
         }
 
-        private async Task<LoginViewModel> BuildLoginInfoDtoAsync(string returnUrl)
+        private async Task<LoginInfoDto> BuildLoginInfoDtoAsync(string returnUrl)
         {
             var context = await this.interaction.GetAuthorizationContextAsync(returnUrl);
             if (context?.IdP != null)
             {
                 // this is meant to short circuit the UI and only trigger the one external IdP
-                return new LoginViewModel
+                return new LoginInfoDto
                 {
                     EnableLocalLogin = false,
                     ReturnUrl = returnUrl,
@@ -271,7 +271,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
                 }
             }
 
-            return new LoginViewModel
+            return new LoginInfoDto
             {
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,

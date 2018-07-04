@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer.Backend.Extensions;
 using IdentityServer.Backend.Filters;
 using IdentityServer4.Models;
 using IdentityServer4.Services;

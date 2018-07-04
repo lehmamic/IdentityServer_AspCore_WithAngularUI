@@ -35,6 +35,10 @@ export class LoginComponent implements OnInit {
       );
   }
 
+  public visibleExternalProviders(externalProviders: Array<ExternalProviderDto>): Array<ExternalProviderDto> {
+    return externalProviders != null ? externalProviders.filter(p => p.displayName != null && p.displayName !== '') : [];
+  }
+
   public externalLoginUrl(provider: string, returnUrl: string): string {
     return `https://localhost:5001/api/account/externallogin?provider=${provider}&returnUrl=${encodeURIComponent(returnUrl)}`;
   }

@@ -31,23 +31,20 @@
   </form>
 </div>
 
-<!-- @if (Model.VisibleExternalProviders.Any())
-{ -->
-<div *ngIf="(loginInfo | async)?.visibleExternalProviders.length > 0">
+<div *ngIf="visibleExternalProviders((loginInfo | async)?.externalProviders).length > 0">
   <div>
       <h3>External Login</h3>
   </div>
   <div>
       <ul>
-        <li *ngFor="let provider of (loginInfo | async)?.visibleExternalProviders">
+        <li *ngFor="let provider of visibleExternalProviders((loginInfo | async)?.externalProviders)">
             <a [href]="externalLoginUrl(provider.authenticationScheme, (loginInfo | async)?.returnUrl)">{{provider.displayName}}</a>
         </li>
       </ul>
   </div>
 </div>
-<!-- } -->
 
-<div *ngIf="!(loginInfo | async)?.enableLocalLogin && (loginInfo | async)?.visibleExternalProviders.length <= 0">
+<div *ngIf="!(loginInfo | async)?.enableLocalLogin && visibleExternalProviders((loginInfo | async)?.externalProviders).length <= 0">
     <strong>Invalid login request</strong>
     There are no login schemes configured for this client.
 </div>
