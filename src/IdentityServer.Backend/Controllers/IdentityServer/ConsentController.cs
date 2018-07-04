@@ -103,7 +103,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             if (grantedConsent != null)
             {
                 // validate return url is still valid
-                var request = await this.interaction.GetAuthorizationContextAsync(model.ReturnUrl.Replace("https://localhost:5001", string.Empty));
+                var request = await this.interaction.GetAuthorizationContextAsync(model.ReturnUrl.ToUri().PathAndQuery);
                 if (request == null)
                 {
                     return result;
@@ -126,7 +126,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
         private async Task<ConsentOutputModel> BuildOutputModelAsync(string returnUrl, ConsentInputModel model = null)
         {
-            var request = await this.interaction.GetAuthorizationContextAsync(returnUrl.Replace("https://localhost:5001", string.Empty));
+            var request = await this.interaction.GetAuthorizationContextAsync(returnUrl.ToUri().PathAndQuery);
             if (request != null)
             {
                 var client = await this.clientStore.FindEnabledClientByIdAsync(request.ClientId);

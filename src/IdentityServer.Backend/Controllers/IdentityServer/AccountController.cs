@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using IdentityModel;
+using IdentityServer.Backend.Extensions;
 using IdentityServer.Backend.Filters;
 using IdentityServer4;
 using IdentityServer4.Events;
@@ -89,7 +90,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
                     // make sure the returnUrl is still valid, and if so redirect back to authorize endpoint or a local page
                     // the IsLocalUrl check is only necessary if you want to support additional local pages, otherwise IsValidReturnUrl is more strict
-                    if (this.interaction.IsValidReturnUrl(model.ReturnUrl.Replace("https://localhost:5001", string.Empty)) || Url.IsLocalUrl(model.ReturnUrl.Replace("https://localhost:5001", string.Empty)))
+                    if (this.interaction.IsValidReturnUrl(model.ReturnUrl.ToUri().PathAndQuery) || Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Ok(new RedirectResultDto { RedirectUrl = model.ReturnUrl });
                     }
@@ -167,7 +168,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
             // validate return URL and redirect back to authorization endpoint or a local page
             var returnUrl = result.Properties.Items["returnUrl"];
-            if (this.interaction.IsValidReturnUrl(returnUrl.Replace("https://localhost:5001", string.Empty)) || Url.IsLocalUrl(returnUrl.Replace("https://localhost:5001", string.Empty)))
+            if (this.interaction.IsValidReturnUrl(returnUrl.ToUri().PathAndQuery) || Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }

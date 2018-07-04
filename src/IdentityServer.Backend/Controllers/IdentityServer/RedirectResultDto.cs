@@ -1,4 +1,6 @@
-﻿namespace IdentityServer.Backend.Controllers.IdentityServer
+﻿using System;
+
+namespace IdentityServer.Backend.Controllers.IdentityServer
 {
     public class RedirectResultDto
     {

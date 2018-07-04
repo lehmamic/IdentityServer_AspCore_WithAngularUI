@@ -12,6 +12,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
         public bool RememberLogin { get; set; }
 
+        [Url]
         [Required]
         public string ReturnUrl { get; set; }
     }
