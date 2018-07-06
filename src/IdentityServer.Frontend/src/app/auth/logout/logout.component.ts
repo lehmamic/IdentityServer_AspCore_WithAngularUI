@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, flatMap, filter } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { LoggedOutInfoDto } from '.';
-import { Observable, Subscription } from 'rxjs';
+import { LoggedOutInfoDto, LogoutRequestDto, LogoutInfoDto } from '.';
+import { Subscription } from 'rxjs';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
@@ -12,7 +12,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   styleUrls: ['./logout.component.scss']
 })
 export class LogoutComponent implements OnInit, OnDestroy {
-  public loggedOutInfo: LoggedOutInfoDto;
+  public logoutInfo: LoggedOutInfoDto | LogoutInfoDto;
 
   private subscriptions: Array<Subscription> = [];
 
@@ -29,9 +29,9 @@ export class LogoutComponent implements OnInit, OnDestroy {
             withCredentials: true
           };
 
-          return this.http.get<LoggedOutInfoDto>('https://localhost:5001/api/account/logout', options);
+          return this.http.get<LogoutInfoDto | LoggedOutInfoDto>('https://localhost:5001/api/account/logout', options);
         }))
-      .subscribe(dto => this.handleLogoutInfo(dto));
+      .subscribe(dto => this.handleLogout(dto));
 
     this.subscriptions.push(subscription);
   }
@@ -41,13 +41,17 @@ export class LogoutComponent implements OnInit, OnDestroy {
   }
 
   public logout(): void {
+    const dto: LogoutRequestDto = {
+      logoutId: this.logoutInfo.logoutId
+    };
+
     const subscription = this.http.post<LoggedOutInfoDto>(
           'https://localhost:5001/api/account/logout',
-          this.loggedOutInfo,
+          dto,
           {
             withCredentials: true
           })
-       .subscribe(dto => this.handleLogoutInfo(dto));
+       .subscribe(info => this.handleLogout(info));
 
        this.subscriptions.push(subscription);
   }
@@ -56,11 +60,15 @@ export class LogoutComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-  private handleLogoutInfo(loggedOutInfoDto: LoggedOutInfoDto): void {
-    this.loggedOutInfo = loggedOutInfoDto;
+  private handleLogout(dto: LogoutInfoDto | LoggedOutInfoDto): void {
+    this.logoutInfo = dto;
 
-    if (this.loggedOutInfo.automaticRedirectAfterSignOut && this.loggedOutInfo.postLogoutRedirectUri != null) {
-      window.location.href = this.loggedOutInfo.postLogoutRedirectUri;
+    const loggedout = <LoggedOutInfoDto>this.logoutInfo;
+
+    if (loggedout.automaticRedirectAfterSignOut !== undefined
+      && loggedout.automaticRedirectAfterSignOut
+      && loggedout.postLogoutRedirectUri != null) {
+      window.location.href = loggedout.postLogoutRedirectUri;
     }
   }
 }

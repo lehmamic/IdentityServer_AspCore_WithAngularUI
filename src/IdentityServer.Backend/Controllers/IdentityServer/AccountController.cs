@@ -183,13 +183,14 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         public async Task<IActionResult> Logout(string logoutId)
         {
             // build a model so the logout page knows what to display
-            var dto = await BuildLogoutOutputModelAsync(logoutId);
+            LogoutInfoDto dto = await this.BuildLogoutInfoDtoAsync(logoutId);
 
             if (dto.ShowLogoutPrompt == false)
             {
                 // if the request for logout was properly authenticated from IdentityServer, then
                 // we don't need to show the prompt and can just log the user out directly.
-                return await Logout(dto);
+                var requestDto = new LogoutRequestDto { LogoutId = dto.LogoutId };
+                return await Logout(requestDto);
             }
 
             return Ok(dto);
@@ -200,10 +201,10 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         /// </summary>
         [HttpPost("logout")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout(LogoutInputModel model)
+        public async Task<IActionResult> Logout(LogoutRequestDto model)
         {
             //// build a model so the logged out page knows what to display
-            var dto = await this.BuildLoggedOutOutputModelAsync(model.LogoutId);
+            var dto = await this.BuildLoggedOutInfoDtoAsync(model.LogoutId);
 
             if (User?.Identity.IsAuthenticated == true)
             {
@@ -215,7 +216,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             }
 
             // check if we need to trigger sign-out at an upstream identity provider
-            if (dto.TriggerExternalSignout)
+            if (dto.TriggerExternalSignout())
             {
                 // build a return URL so the upstream provider will redirect back
                 // to us after the user has logged out. this allows us to then
@@ -284,17 +285,9 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             };
         }
 
-        //private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
-        //{
-        //    var vm = await BuildLoginInfoDtoAsync(model.ReturnUrl);
-        //    vm.Username = model.Username;
-        //    vm.RememberLogin = model.RememberLogin;
-        //    return vm;
-        //}
-
-        private async Task<LogoutOutputModel> BuildLogoutOutputModelAsync(string logoutId)
+        private async Task<LogoutInfoDto> BuildLogoutInfoDtoAsync(string logoutId)
         {
-            var dto = new LogoutOutputModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
+            var dto = new LogoutInfoDto { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
 
             if (User?.Identity.IsAuthenticated != true)
             {
@@ -316,12 +309,12 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             return dto;
         }
 
-        private async Task<LoggedOutOutputModel> BuildLoggedOutOutputModelAsync(string logoutId)
+        private async Task<LoggedOutInfoDto> BuildLoggedOutInfoDtoAsync(string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)
             var logout = await this.interaction.GetLogoutContextAsync(logoutId);
 
-            var dto = new LoggedOutOutputModel
+            var dto = new LoggedOutInfoDto
             {
                 AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut,
                 PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,

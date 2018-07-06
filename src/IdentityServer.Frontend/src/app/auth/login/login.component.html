@@ -48,7 +48,7 @@
   </div>
 </div>
 
-<div *ngIf="!(loginInfo | async)?.enableLocalLogin && visibleExternalProviders((loginInfo | async)?.externalProviders).length <= 0">
+<div *ngIf="!(loginInfo$ | async)?.enableLocalLogin && visibleExternalProviders((loginInfo$ | async)?.externalProviders).length <= 0">
     <strong>Invalid login request</strong>
     There are no login schemes configured for this client.
 </div>

@@ -1,10 +1,18 @@
-export interface LoggedOutInfoDto {
+export interface LogoutRequestDto {
+  logoutId: string;
+}
+
+export interface LogoutInfoDto {
+  logoutId: string;
   showLogoutPrompt: boolean;
+}
+
+export interface LoggedOutInfoDto {
+  logoutId: string;
   postLogoutRedirectUri: string;
   clientName: string;
   signOutIframeUrl: string;
   automaticRedirectAfterSignOut: boolean;
-  logoutId: string;
   triggerExternalSignout: boolean;
   externalAuthenticationScheme: string;
 }
