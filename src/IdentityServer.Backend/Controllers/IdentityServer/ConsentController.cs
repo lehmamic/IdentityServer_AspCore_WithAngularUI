@@ -34,7 +34,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         [HttpGet]
         public async Task<IActionResult> Index(string returnUrl)
         {
-            var dto = await this.BuildOutputModelAsync(returnUrl);
+            ConsentInfoDto dto = await this.BuildConsentInfoDtoAsync(returnUrl);
             if (dto != null)
             {
                 return Ok(dto);
@@ -45,8 +45,13 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
 
         [HttpPost]
         // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index([FromBody]ConsentInputModel model)
+        public async Task<IActionResult> Index([FromBody]ConsentRequestDto model)
         {
+            if(!this.ModelState.IsValid)
+            {
+                BadRequest(ModelState);
+            }
+
             var result = await this.ProcessConsent(model);
 
             if (result.IsRedirect)
@@ -62,7 +67,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             return BadRequest(ModelState);
         }
 
-        private async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
+        private async Task<ProcessConsentResult> ProcessConsent(ConsentRequestDto model)
         {
             var result = new ProcessConsentResult();
 
@@ -116,16 +121,11 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
                 // indicate that's it ok to redirect back to authorization endpoint
                 result.RedirectUri = model.ReturnUrl;
             }
-            else
-            {
-                // we need to redisplay the consent UI
-                result.ViewModel = await this.BuildOutputModelAsync(model.ReturnUrl, model);
-            }
 
             return result;
         }
 
-        private async Task<ConsentOutputModel> BuildOutputModelAsync(string returnUrl, ConsentInputModel model = null)
+        private async Task<ConsentInfoDto> BuildConsentInfoDtoAsync(string returnUrl, ConsentRequestDto model = null)
         {
             var request = await this.interaction.GetAuthorizationContextAsync(returnUrl.ToUri().PathAndQuery);
             if (request != null)
@@ -136,7 +136,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
                     var resources = await this.resourceStore.FindEnabledResourcesByScopeAsync(request.ScopesRequested);
                     if (resources != null && (resources.IdentityResources.Any() || resources.ApiResources.Any()))
                     {
-                        return this.CreateConsentOutputModel(model, returnUrl, request, client, resources);
+                        return this.CreateConsentInfoDto(model, returnUrl, request, client, resources);
                     }
                     else
                     {
@@ -156,18 +156,16 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             return null;
         }
 
-        private ConsentOutputModel CreateConsentOutputModel(
-            ConsentInputModel model,
+        private ConsentInfoDto CreateConsentInfoDto(
+            ConsentRequestDto model,
             string returnUrl,
             AuthorizationRequest request,
             Client client,
             Resources resources)
         {
-            var dto = new ConsentOutputModel
+            // TODO: Remove the checked property and check everything automatically in the UI.
+            var dto = new ConsentInfoDto
             {
-                RememberConsent = model?.RememberConsent ?? true,
-                ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),
-
                 ReturnUrl = returnUrl,
 
                 ClientName = client.ClientName ?? client.ClientId,
@@ -177,12 +175,12 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
             };
 
             dto.IdentityScopes = resources.IdentityResources
-                .Select(x => this.CreateScopeDto(x, dto.ScopesConsented.Contains(x.Name) || model == null))
+                .Select(x => this.CreateScopeDto(x, true))
                 .ToArray();
             
             dto.ResourceScopes = resources.ApiResources
                 .SelectMany(x => x.Scopes)
-                .Select(x => this.CreateScopeDto(x, dto.ScopesConsented.Contains(x.Name) || model == null))
+                .Select(x => this.CreateScopeDto(x, true))
                 .ToArray();
             
             if (ConsentOptions.EnableOfflineAccess && resources.OfflineAccess)
@@ -190,7 +188,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
                 dto.ResourceScopes = dto.ResourceScopes.Union(
                     new ScopeDto[]
                     {
-                        this.GetOfflineAccessScope(dto.ScopesConsented.Contains(IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess) || model == null)
+                        this.GetOfflineAccessScope(true)
                     });
             }
 

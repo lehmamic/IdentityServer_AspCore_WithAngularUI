@@ -7,13 +7,14 @@ export interface ConsentInputDto {
   returnUrl: string;
 }
 
-export interface ConsentInfoDto extends ConsentInputDto {
+export interface ConsentInfoDto {
   clientName: string;
   clientUrl: string;
   clientLogoUrl: string;
   allowRememberConsent: boolean;
   identityScopes: Array<ScopeDto>;
   resourceScopes: Array<ScopeDto>;
+  returnUrl: string;
 }
 
 export interface ScopeDto {

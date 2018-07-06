@@ -2,7 +2,7 @@
 
 namespace IdentityServer.Backend.Controllers.IdentityServer
 {
-    public class ConsentOutputModel : ConsentInputModel
+    public class ConsentInfoDto
     {
         public string ClientName { get; set; }
 
@@ -15,5 +15,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         public IEnumerable<ScopeDto> IdentityScopes { get; set; }
 
         public IEnumerable<ScopeDto> ResourceScopes { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }

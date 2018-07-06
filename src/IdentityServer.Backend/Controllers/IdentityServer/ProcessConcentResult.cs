@@ -8,7 +8,7 @@
 
         public bool ShowView => ViewModel != null;
 
-        public ConsentOutputModel ViewModel { get; set; }
+        public ConsentInfoDto ViewModel { get; set; }
 
         public bool HasValidationError => ValidationError != null;
 

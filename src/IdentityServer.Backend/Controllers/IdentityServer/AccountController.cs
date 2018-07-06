@@ -201,7 +201,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         /// </summary>
         [HttpPost("logout")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout(LogoutRequestDto model)
+        public async Task<IActionResult> Logout([FromBody]LogoutRequestDto model)
         {
             if(!this.ModelState.IsValid)
             {
