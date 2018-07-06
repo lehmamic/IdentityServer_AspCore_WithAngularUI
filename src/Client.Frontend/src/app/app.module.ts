@@ -39,7 +39,7 @@ export class AppModule {
     // The ID Token MUST be rejected if the ID Token d…oes not list the Client as a valid audience, or if it contains additional audiences not trusted by the Client.
     openIDImplicitFlowConfiguration.client_id = 'singleapp';
     openIDImplicitFlowConfiguration.response_type = 'id_token token';
-    openIDImplicitFlowConfiguration.scope = 'openid profile api1';
+    openIDImplicitFlowConfiguration.scope = 'openid profile email api1';
     openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'http://localhost:4201/Unauthorized';
     openIDImplicitFlowConfiguration.start_checksession = false;
     openIDImplicitFlowConfiguration.silent_renew = false;

@@ -15,6 +15,7 @@ namespace IdentityServer.Backend
       {
         new IdentityResources.OpenId(),
         new IdentityResources.Profile(),
+        new IdentityResources.Email(), // not in the original example => to add email IdentityResources / ClientAllowedScopes must be added and the client needs to requestthis scope.
       };
     }
 
@@ -49,6 +50,7 @@ namespace IdentityServer.Backend
           {
             IdentityServerConstants.StandardScopes.OpenId,
             IdentityServerConstants.StandardScopes.Profile,
+            IdentityServerConstants.StandardScopes.Email,
             "api1"
           },
         },

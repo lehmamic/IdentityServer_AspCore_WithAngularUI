@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChildren, QueryList, OnDestroy } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { map, flatMap } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
+import { map, flatMap, catchError } from 'rxjs/operators';
+import { Observable, Subscription, of } from 'rxjs';
 import { ConsentInfoDto } from '.';
-import { ScopeDto, ButtonType, ConsentInputDto } from './consent.model';
+import { ButtonType } from './consent.model';
 import { ScopeListItemComponent } from './scope-list-item/scope-list-item.component';
-import { RedirectDto } from '..';
+import { RedirectDto, ErrorDto } from '..';
 
 @Component({
   selector: 'app-consent',
@@ -18,6 +18,7 @@ export class ConsentComponent implements OnInit, OnDestroy {
 
   public consentInfo: Observable<ConsentInfoDto>;
   public rememberMyDecision: boolean;
+  public errors: ErrorDto;
 
   private subscriptions: Array<Subscription> = [];
 
@@ -32,7 +33,8 @@ export class ConsentComponent implements OnInit, OnDestroy {
           };
 
           return this.http.get<ConsentInfoDto>('https://localhost:5001/api/consent', options);
-        })
+        }),
+        catchError(error => this.handleError<ConsentInfoDto>(error))
       );
   }
 
@@ -57,12 +59,37 @@ export class ConsentComponent implements OnInit, OnDestroy {
         const options = { withCredentials: true };
 
         return this.http.post<RedirectDto>('https://localhost:5001/api/consent', dto, options);
-      })
+      }),
+      catchError(error => this.handleError<RedirectDto>(error))
     )
     .subscribe(responseData => {
       window.location.href = responseData.redirectUrl;
     }, err => console.error(err));
 
     this.subscriptions.push(subscription);
+  }
+
+  public getErrorsMessages(): Array<string> {
+    const messages: Array<string> = [];
+
+    if (this.errors) {
+      for (const msgs of Object.keys(this.errors).map(key => this.errors[key])) {
+        for (const msg of msgs) {
+          messages.push(msg);
+        }
+      }
+    }
+
+    return messages;
+  }
+
+  private handleError<T>(error: HttpErrorResponse): Observable<T> {
+    if (error.status === 400) {
+      this.errors = error.error;
+    } else {
+      this.errors = { '': ['Oops and unknown error occured.'] };
+    }
+
+    return of();
   }
 }
