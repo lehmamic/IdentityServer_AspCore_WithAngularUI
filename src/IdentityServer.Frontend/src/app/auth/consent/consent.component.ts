@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { map, flatMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ConsentInfoDto } from '.';
 import { ScopeDto, ButtonType, ConsentInputDto } from './consent.model';
 import { ScopeListItemComponent } from './scope-list-item/scope-list-item.component';
@@ -13,12 +13,13 @@ import { RedirectDto } from '..';
   templateUrl: './consent.component.html',
   styleUrls: ['./consent.component.scss']
 })
-export class ConsentComponent implements OnInit {
+export class ConsentComponent implements OnInit, OnDestroy {
   @ViewChildren(ScopeListItemComponent) scopes: QueryList<ScopeListItemComponent>;
 
   public consentInfo: Observable<ConsentInfoDto>;
   public rememberMyDecision: boolean;
 
+  private subscriptions: Array<Subscription> = [];
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
     this.consentInfo = this.route.queryParamMap
@@ -39,8 +40,12 @@ export class ConsentComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
   public sendConsent(button: ButtonType): void {
-    this.consentInfo.pipe(
+    const subscription = this.consentInfo.pipe(
       map(info =>
       ({
         button: button,
@@ -57,5 +62,7 @@ export class ConsentComponent implements OnInit {
     .subscribe(responseData => {
       window.location.href = responseData.redirectUrl;
     }, err => console.error(err));
+
+    this.subscriptions.push(subscription);
   }
 }
