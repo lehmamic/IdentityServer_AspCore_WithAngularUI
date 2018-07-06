@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { map, flatMap, catchError } from 'rxjs/operators';
 import { LoginInfoDto, ExternalProviderDto, LoginRequestDto } from './login.model';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { RedirectDto, ErrorDto } from '../auth.model';
 import { Key } from 'protractor';
 
@@ -12,13 +12,15 @@ import { Key } from 'protractor';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   public loginInfo$: Observable<LoginInfoDto>;
   public errors: ErrorDto;
   public username: string;
   public password: string;
   public rememberLogin: boolean;
+
+  private subscriptions: Array<Subscription> = [];
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
   }
@@ -37,6 +39,10 @@ export class LoginComponent implements OnInit {
         }),
         catchError(error => this.handleError<LoginInfoDto>(error))
       );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   public getErrorsMessages(): Array<string> {
@@ -62,8 +68,8 @@ export class LoginComponent implements OnInit {
   }
 
   public login(): void {
-    this.route
-    .queryParamMap
+    const subscription = this.route
+      .queryParamMap
       .pipe(
         map(params => params.get('returnUrl')),
         map(returnUrl =>
@@ -85,6 +91,8 @@ export class LoginComponent implements OnInit {
       .subscribe(data => {
         window.location.href = data.redirectUrl;
       }, err => console.error(err));
+
+      this.subscriptions.push(subscription);
   }
 
   private handleError<T>(error: HttpErrorResponse): Observable<T> {
