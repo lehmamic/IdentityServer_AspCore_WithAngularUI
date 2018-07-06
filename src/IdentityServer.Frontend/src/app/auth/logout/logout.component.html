@@ -1,23 +1,27 @@
-<div *ngIf="logoutInfo != null">
+<div>
+    <div>
+      <div *ngFor="let message of getErrorsMessages()">{{message}}</div>
+    </div>
+
   <div>
       <h2>
         Logout
-        <small *ngIf="logoutInfo.showLogoutPrompt !== undefined && logoutInfo.showLogoutPrompt">You are now logged out</small>
+        <small *ngIf="logoutInfo?.showLogoutPrompt !== undefined && logoutInfo?.showLogoutPrompt">You are now logged out</small>
       </h2>
   </div>
 
-  <div *ngIf="logoutInfo.showLogoutPrompt !== undefined && logoutInfo.showLogoutPrompt">
+  <div *ngIf="logoutInfo?.showLogoutPrompt !== undefined && logoutInfo?.showLogoutPrompt">
       <p>Would you like to logout of IdentityServer?</p>
 
       <button (click)=logout()>Yes</button>
   </div>
 
-  <div *ngIf="logoutInfo.postLogoutRedirectUri !== undefined && logoutInfo.postLogoutRedirectUri != null">
-      Click <a [href]="logoutInfo.postLogoutRedirectUri">here</a> to return to the
+  <div *ngIf="logoutInfo?.postLogoutRedirectUri !== undefined && logoutInfo?.postLogoutRedirectUri != null">
+      Click <a [href]="logoutInfo?.postLogoutRedirectUri">here</a> to return to the
       <span>{{logoutInfo.clientName}}</span> application.
   </div>
 
-  <div *ngIf="logoutInfo.postLogoutRedirectUri !== undefined && logoutInfo .signOutIframeUrl != null">
-    <iframe width="0" height="0" class="signout" [src]="sanitizeUrl(logoutInfo.signOutIframeUrl)"></iframe>
+  <div *ngIf="logoutInfo?.postLogoutRedirectUri !== undefined && logoutInfo?.signOutIframeUrl != null">
+    <iframe width="0" height="0" class="signout" [src]="sanitizeUrl(logoutInfo?.signOutIframeUrl)"></iframe>
   </div>
 </div>

@@ -100,7 +100,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.errors = error.error;
     } else if (error.status === 401) {
       this.errors = { '': ['Invalid username or password.'] };
+    } else {
+      this.errors = { '': ['Oops and unknown error occured.'] };
     }
+
     return of();
   }
 }

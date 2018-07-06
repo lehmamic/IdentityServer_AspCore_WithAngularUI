@@ -203,6 +203,11 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout(LogoutRequestDto model)
         {
+            if(!this.ModelState.IsValid)
+            {
+                return BadRequest(this.ModelState);
+            }
+
             //// build a model so the logged out page knows what to display
             var dto = await this.BuildLoggedOutInfoDtoAsync(model.LogoutId);
 
