@@ -8,6 +8,11 @@
 <div>
   <button (click)="login()">Login</button>
   <button (click)="logout()">Logout</button>
+  <button (click)="callApi()">Api</button>
 </div>
+
+<pre>
+  {{result$ | async}}
+</pre>
 
 <router-outlet></router-outlet>
