@@ -1,4 +1,5 @@
-﻿using IdentityServer4;
+﻿using IdentityServer.Backend.Utils;
+using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,8 @@ namespace IdentityServer.Backend
                         .AllowCredentials();
                 });
             });
+
+            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
 
             // configure identity server with in-memory stores, keys, clients and scopes
             services.AddIdentityServer(opt =>
@@ -70,6 +73,7 @@ namespace IdentityServer.Backend
             }
 
             app.UseCors("default");
+            app.UseAntiforgeryToken();
 
             app.UseIdentityServer();
 

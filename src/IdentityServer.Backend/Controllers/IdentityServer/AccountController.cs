@@ -6,7 +6,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer.Backend.Extensions;
-using IdentityServer.Backend.Filters;
+using IdentityServer.Backend.Utils;
 using IdentityServer4;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -62,7 +62,7 @@ namespace IdentityServer.Backend.Controllers.IdentityServer
         }
 
         [HttpPost("login")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody]LoginRequestDto model)
         {
             if (ModelState.IsValid)
