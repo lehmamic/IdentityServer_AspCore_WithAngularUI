@@ -329,3 +329,6 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 src/IdentityServer.Backend/tempkey.rsa
+
+# OSX Files
+.DS_Store
